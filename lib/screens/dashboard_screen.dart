@@ -146,7 +146,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             expandedHeight: 180,
             floating: false,
             pinned: true,
-            backgroundColor: NothingTheme.background.withOpacity(0.8),
+            backgroundColor: NothingTheme.background.withValues(alpha: 0.8),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 padding: const EdgeInsets.all(24),

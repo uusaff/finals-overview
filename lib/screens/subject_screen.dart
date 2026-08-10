@@ -110,10 +110,10 @@ class _SubjectScreenState extends State<SubjectScreen> {
                 duration: const Duration(milliseconds: 300),
                 margin: const EdgeInsets.only(bottom: 12),
                 decoration: BoxDecoration(
-                  color: topic.isCompleted ? NothingTheme.surface.withOpacity(0.5) : NothingTheme.surface,
+                  color: topic.isCompleted ? NothingTheme.surface.withValues(alpha: 0.5) : NothingTheme.surface,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: topic.isCompleted ? NothingTheme.accent.withOpacity(0.3) : NothingTheme.border,
+                    color: topic.isCompleted ? NothingTheme.accent.withValues(alpha: 0.3) : NothingTheme.border,
                   ),
                 ),
                 child: ListTile(
