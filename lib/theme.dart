@@ -29,7 +29,7 @@ class NothingTheme {
         titleLarge: GoogleFonts.inter(color: textPrimary, fontWeight: FontWeight.w800, letterSpacing: -0.5),
         labelLarge: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w600),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
