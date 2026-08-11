@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import '../theme.dart';
 import 'dashboard_screen.dart';
 
@@ -73,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Row(
         children: [
           Icon(
-            isMet ? LucideIcons.checkCircle2 : LucideIcons.circle,
+            isMet ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
             color: isMet ? Colors.green : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
             size: 16,
           ),
@@ -103,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Icon(LucideIcons.graduationCap, size: 48, color: NothingTheme.accent)
+              Icon(Icons.school_rounded, size: 48, color: NothingTheme.accent)
                   .animate()
                   .scale(delay: 200.ms, duration: 600.ms, curve: Curves.easeOutBack)
                   .fadeIn(),
@@ -125,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  prefixIcon: Icon(LucideIcons.mail, color: colorScheme.onSurface.withValues(alpha: 0.5)),
+                  prefixIcon: Icon(Icons.email_rounded, color: colorScheme.onSurface.withValues(alpha: 0.5)),
                 ),
                 keyboardType: TextInputType.emailAddress,
               ).animate().fade(delay: 300.ms).slideX(begin: -0.05, end: 0),
@@ -137,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onChanged: _isSignup ? _checkPassword : null,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  prefixIcon: Icon(LucideIcons.lock, color: colorScheme.onSurface.withValues(alpha: 0.5)),
+                  prefixIcon: Icon(Icons.lock_rounded, color: colorScheme.onSurface.withValues(alpha: 0.5)),
                 ),
                 obscureText: true,
               ).animate().fade(delay: 400.ms).slideX(begin: -0.05, end: 0),

@@ -14,7 +14,6 @@
         "flutter_animate",
         "google_fonts",
         "intl",
-        "lucide_icons",
         "percent_indicator",
         "provider"
       ],
@@ -63,13 +62,6 @@
       "dependencies": [
         "flutter",
         "vector_math"
-      ]
-    },
-    {
-      "name": "lucide_icons",
-      "version": "0.257.0",
-      "dependencies": [
-        "flutter"
       ]
     },
     {
@@ -219,6 +211,22 @@
         "stream_channel",
         "string_scanner",
         "term_glyph"
+      ]
+    },
+    {
+      "name": "equatable",
+      "version": "2.1.0",
+      "dependencies": [
+        "collection",
+        "meta"
+      ]
+    },
+    {
+      "name": "flutter_shaders",
+      "version": "0.1.3",
+      "dependencies": [
+        "flutter",
+        "vector_math"
       ]
     },
     {
@@ -536,22 +544,6 @@
         "collection",
         "meta",
         "pub_semver"
-      ]
-    },
-    {
-      "name": "flutter_shaders",
-      "version": "0.1.3",
-      "dependencies": [
-        "flutter",
-        "vector_math"
-      ]
-    },
-    {
-      "name": "equatable",
-      "version": "2.1.0",
-      "dependencies": [
-        "collection",
-        "meta"
       ]
     }
   ],

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'package:confetti/confetti.dart';
 import '../models/app_state.dart';
 import '../theme.dart';
@@ -107,7 +106,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showAddTopicDialog,
         backgroundColor: NothingTheme.accent,
-        icon: const Icon(LucideIcons.plus, color: Colors.white),
+        icon: const Icon(Icons.add_rounded, color: Colors.white),
         label: const Text('ADD TOPIC', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ).animate().scale(delay: 500.ms, curve: Curves.easeOutBack),
       body: Stack(
@@ -131,7 +130,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(LucideIcons.listPlus, size: 64, color: colorScheme.onSurface.withValues(alpha: 0.2))
+                      Icon(Icons.format_list_bulleted_add, size: 64, color: colorScheme.onSurface.withValues(alpha: 0.2))
                           .animate(onPlay: (controller) => controller.repeat(reverse: true))
                           .scaleXY(begin: 1, end: 1.1, duration: 2.seconds),
                       const SizedBox(height: 16),
@@ -177,7 +176,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                             ),
                           ),
                           child: topic.isCompleted
-                              ? const Icon(LucideIcons.check, size: 18, color: Colors.white)
+                              ? const Icon(Icons.check_rounded, size: 18, color: Colors.white)
                                   .animate().scale(curve: Curves.easeOutBack)
                               : null,
                         ),

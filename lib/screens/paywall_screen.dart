@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import '../theme.dart';
 
 class PaywallScreen extends StatelessWidget {
@@ -16,7 +15,7 @@ class PaywallScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(LucideIcons.x, color: Colors.white),
+          icon: const Icon(Icons.close_rounded, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -35,7 +34,7 @@ class PaywallScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Spacer(),
-                const Icon(LucideIcons.crown, size: 80, color: NothingTheme.accent)
+                const Icon(Icons.workspace_premium_rounded, size: 80, color: NothingTheme.accent)
                     .animate(onPlay: (controller) => controller.repeat(reverse: true))
                     .scaleXY(begin: 1, end: 1.1, duration: 2.seconds)
                     .shimmer(duration: 2.seconds),
@@ -58,13 +57,13 @@ class PaywallScreen extends StatelessWidget {
                 
                 const SizedBox(height: 48),
                 
-                _buildFeatureRow(context, LucideIcons.bot, 'AI Study Plan Generator'),
+                _buildFeatureRow(context, Icons.auto_awesome_rounded, 'AI Study Plan Generator'),
                 const SizedBox(height: 16),
-                _buildFeatureRow(context, LucideIcons.barChart2, 'Advanced Analytics'),
+                _buildFeatureRow(context, Icons.bar_chart_rounded, 'Advanced Analytics'),
                 const SizedBox(height: 16),
-                _buildFeatureRow(context, LucideIcons.infinity, 'Unlimited Subjects'),
+                _buildFeatureRow(context, Icons.all_inclusive_rounded, 'Unlimited Subjects'),
                 const SizedBox(height: 16),
-                _buildFeatureRow(context, LucideIcons.bellRing, 'Smart Push Notifications'),
+                _buildFeatureRow(context, Icons.notifications_active_rounded, 'Smart Push Notifications'),
                 
                 const Spacer(),
                 

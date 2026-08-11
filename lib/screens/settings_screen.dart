@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../models/app_state.dart';
 import '../theme.dart';
@@ -45,7 +44,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(LucideIcons.crown, color: Colors.white, size: 32),
+                  const Icon(Icons.workspace_premium_rounded, color: Colors.white, size: 32),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
@@ -57,7 +56,7 @@ class SettingsScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Icon(LucideIcons.chevronRight, color: Colors.white),
+                  const Icon(Icons.chevron_right_rounded, color: Colors.white),
                 ],
               ),
             ),
@@ -131,7 +130,7 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 SwitchListTile(
                   title: const Text('Dark Mode'),
-                  secondary: Icon(isDark ? LucideIcons.moon : LucideIcons.sun),
+                  secondary: Icon(isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded),
                   value: isDark,
                   activeColor: NothingTheme.accent,
                   onChanged: (_) => context.read<AppState>().toggleTheme(),
@@ -139,8 +138,8 @@ class SettingsScreen extends StatelessWidget {
                 Divider(color: colorScheme.onSurface.withValues(alpha: 0.1), height: 1),
                 ListTile(
                   title: const Text('Push Notifications'),
-                  secondary: const Icon(LucideIcons.bell),
-                  trailing: const Icon(LucideIcons.lock, size: 16),
+                  leading: const Icon(Icons.notifications_rounded),
+                  trailing: const Icon(Icons.lock_rounded, size: 16),
                   onTap: () {
                      Navigator.push(context, MaterialPageRoute(builder: (_) => const PaywallScreen()));
                   },
@@ -148,7 +147,7 @@ class SettingsScreen extends StatelessWidget {
                 Divider(color: colorScheme.onSurface.withValues(alpha: 0.1), height: 1),
                 ListTile(
                   title: const Text('Sign Out'),
-                  secondary: const Icon(LucideIcons.logOut),
+                  leading: const Icon(Icons.logout_rounded),
                   textColor: NothingTheme.accent,
                   iconColor: NothingTheme.accent,
                   onTap: () {

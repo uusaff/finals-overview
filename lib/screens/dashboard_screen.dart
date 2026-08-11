@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import '../models/app_state.dart';
@@ -88,7 +87,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     DateFormat('MMM dd, yyyy').format(selectedDate),
                     style: TextStyle(color: colorScheme.onSurface),
                   ),
-                  trailing: const Icon(LucideIcons.calendar, color: NothingTheme.accent),
+                  trailing: const Icon(Icons.calendar_today_rounded, color: NothingTheme.accent),
                   onTap: () async {
                     final date = await showDatePicker(
                       context: context,
@@ -144,7 +143,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       children: [
         if (_isFabOpen) ...[
           _buildFabMenuItem(
-            LucideIcons.settings, 
+            Icons.settings_rounded, 
             'Settings', 
             () {
               setState(() => _isFabOpen = false);
@@ -154,7 +153,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ).animate().slideY(begin: 0.5, end: 0, duration: 200.ms).fade(),
           const SizedBox(height: 12),
           _buildFabMenuItem(
-            LucideIcons.timer, 
+            Icons.timer_rounded, 
             'Study Timer', 
             () {
               setState(() => _isFabOpen = false);
@@ -164,7 +163,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ).animate().slideY(begin: 0.5, end: 0, duration: 200.ms, delay: 50.ms).fade(),
           const SizedBox(height: 12),
           _buildFabMenuItem(
-            LucideIcons.plus, 
+            Icons.add_rounded, 
             'Add Subject', 
             () {
               setState(() => _isFabOpen = false);
@@ -185,7 +184,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: _isFabOpen ? colorScheme.onSurface.withValues(alpha: 0.1) : Colors.transparent,
             ),
           ),
-          child: Icon(_isFabOpen ? LucideIcons.x : LucideIcons.menu),
+          child: Icon(_isFabOpen ? Icons.close_rounded : Icons.menu_rounded),
         ).animate(target: _isFabOpen ? 1 : 0).rotate(begin: 0, end: 0.125),
       ],
     );
@@ -285,12 +284,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                         if (!_isEditingTitle)
                           IconButton(
-                            icon: Icon(LucideIcons.edit2, size: 20, color: colorScheme.onSurface.withValues(alpha: 0.5)),
+                            icon: Icon(Icons.edit_rounded, size: 20, color: colorScheme.onSurface.withValues(alpha: 0.5)),
                             onPressed: () => setState(() => _isEditingTitle = true),
                           ),
                         if (_isEditingTitle)
                           IconButton(
-                            icon: const Icon(LucideIcons.check, color: NothingTheme.accent),
+                            icon: const Icon(Icons.check_rounded, color: NothingTheme.accent),
                             onPressed: _submitTitle,
                           ),
                       ],
@@ -388,7 +387,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         children: [
                                           Text(subject.name, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20)),
                                           IconButton(
-                                            icon: Icon(LucideIcons.trash2, color: colorScheme.onSurface.withValues(alpha: 0.3)),
+                                            icon: Icon(Icons.delete_outline_rounded, color: colorScheme.onSurface.withValues(alpha: 0.3)),
                                             onPressed: () {
                                               showDialog(
                                                 context: context,
@@ -418,7 +417,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       const SizedBox(height: 16),
                                       Row(
                                         children: [
-                                          Icon(LucideIcons.timer, size: 16, color: urgencyColor),
+                                          Icon(Icons.timer_outlined, size: 16, color: urgencyColor),
                                           const SizedBox(width: 8),
                                           Text(
                                             '${daysLeft < 0 ? 0 : daysLeft} days left',

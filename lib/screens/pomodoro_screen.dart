@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'dart:async';
 import '../theme.dart';
 
@@ -96,7 +95,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
               children: [
                 IconButton(
                   onPressed: _resetTimer,
-                  icon: const Icon(LucideIcons.rotateCcw),
+                  icon: const Icon(Icons.refresh_rounded),
                   iconSize: 32,
                   color: colorScheme.onSurface.withValues(alpha: 0.5),
                 ).animate().slideY(begin: 0.5, delay: 100.ms).fade(),
@@ -114,7 +113,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                       color: _isRunning ? colorScheme.onSurface.withValues(alpha: 0.2) : Colors.transparent,
                     ),
                   ),
-                  child: Icon(_isRunning ? LucideIcons.pause : LucideIcons.play),
+                  child: Icon(_isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded),
                 ).animate().scale(delay: 200.ms, curve: Curves.easeOutBack),
               ],
             ),
