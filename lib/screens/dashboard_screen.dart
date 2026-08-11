@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import '../models/app_state.dart';
 import '../theme.dart';
 import 'subject_screen.dart';
+import 'pomodoro_screen.dart';
+import 'settings_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -19,6 +23,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   DateTime _now = DateTime.now();
   bool _isEditingTitle = false;
   late TextEditingController _titleController;
+  bool _isFabOpen = false;
 
   @override
   void initState() {
@@ -46,11 +51,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _showAddSubjectDialog() {
     final nameController = TextEditingController();
     DateTime selectedDate = DateTime.now().add(const Duration(days: 7));
+    final colorScheme = Theme.of(context).colorScheme;
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: NothingTheme.surface,
+      backgroundColor: colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -77,12 +83,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               StatefulBuilder(
                 builder: (context, setModalState) => ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text('Exam Date', style: TextStyle(color: NothingTheme.textMuted)),
+                  title: Text('Exam Date', style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.5))),
                   subtitle: Text(
                     DateFormat('MMM dd, yyyy').format(selectedDate),
-                    style: TextStyle(color: NothingTheme.textPrimary),
+                    style: TextStyle(color: colorScheme.onSurface),
                   ),
-                  trailing: const Icon(Icons.calendar_today, color: NothingTheme.accent),
+                  trailing: const Icon(LucideIcons.calendar, color: NothingTheme.accent),
                   onTap: () async {
                     final date = await showDatePicker(
                       context: context,
@@ -92,9 +98,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       builder: (context, child) {
                         return Theme(
                           data: Theme.of(context).copyWith(
-                            colorScheme: const ColorScheme.dark(
+                            colorScheme: Theme.of(context).colorScheme.copyWith(
                               primary: NothingTheme.accent,
-                              surface: NothingTheme.surface,
                             ),
                           ),
                           child: child!,
@@ -132,253 +137,337 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return NothingTheme.accent;
   }
 
+  Widget _buildFabMenu(ColorScheme colorScheme) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (_isFabOpen) ...[
+          _buildFabMenuItem(
+            LucideIcons.settings, 
+            'Settings', 
+            () {
+              setState(() => _isFabOpen = false);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+            }, 
+            colorScheme
+          ).animate().slideY(begin: 0.5, end: 0, duration: 200.ms).fade(),
+          const SizedBox(height: 12),
+          _buildFabMenuItem(
+            LucideIcons.timer, 
+            'Study Timer', 
+            () {
+              setState(() => _isFabOpen = false);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const PomodoroScreen()));
+            }, 
+            colorScheme
+          ).animate().slideY(begin: 0.5, end: 0, duration: 200.ms, delay: 50.ms).fade(),
+          const SizedBox(height: 12),
+          _buildFabMenuItem(
+            LucideIcons.plus, 
+            'Add Subject', 
+            () {
+              setState(() => _isFabOpen = false);
+              _showAddSubjectDialog();
+            }, 
+            colorScheme,
+            isAccent: true
+          ).animate().slideY(begin: 0.5, end: 0, duration: 200.ms, delay: 100.ms).fade(),
+          const SizedBox(height: 16),
+        ],
+        FloatingActionButton(
+          onPressed: () => setState(() => _isFabOpen = !_isFabOpen),
+          backgroundColor: _isFabOpen ? colorScheme.surface : NothingTheme.accent,
+          foregroundColor: _isFabOpen ? colorScheme.onSurface : Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: _isFabOpen ? colorScheme.onSurface.withValues(alpha: 0.1) : Colors.transparent,
+            ),
+          ),
+          child: Icon(_isFabOpen ? LucideIcons.x : LucideIcons.menu),
+        ).animate(target: _isFabOpen ? 1 : 0).rotate(begin: 0, end: 0.125),
+      ],
+    );
+  }
+
+  Widget _buildFabMenuItem(IconData icon, String label, VoidCallback onTap, ColorScheme colorScheme, {bool isAccent = false}) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: colorScheme.onSurface.withValues(alpha: 0.1)),
+          ),
+          child: Text(label, style: TextStyle(color: colorScheme.onSurface, fontWeight: FontWeight.bold)),
+        ),
+        const SizedBox(width: 12),
+        FloatingActionButton.small(
+          heroTag: label,
+          onPressed: onTap,
+          backgroundColor: isAccent ? NothingTheme.accent : colorScheme.surface,
+          foregroundColor: isAccent ? Colors.white : colorScheme.onSurface,
+          elevation: 2,
+          child: Icon(icon),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddSubjectDialog,
-        backgroundColor: NothingTheme.accent,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 180,
-            floating: false,
-            pinned: true,
-            backgroundColor: NothingTheme.background.withValues(alpha: 0.8),
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                padding: const EdgeInsets.all(24),
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/grid.png'), // Will add a subtle grid later or use CSS-like pattern
-                    opacity: 0.05,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Live Clock Widget
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+      floatingActionButton: _buildFabMenu(colorScheme),
+      body: Stack(
+        children: [
+          CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 180,
+                floating: false,
+                pinned: true,
+                backgroundColor: colorScheme.surface.withValues(alpha: 0.8),
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Container(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          DateFormat('HH:mm:ss').format(_now),
-                          style: NothingTheme.metricsStyle.copyWith(fontSize: 32, fontWeight: FontWeight.bold),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              DateFormat('HH:mm:ss').format(_now),
+                              style: NothingTheme.metricsStyle(isDark).copyWith(fontSize: 32, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              DateFormat('EEE, MMM dd').format(_now),
+                              style: NothingTheme.metricsStyle(isDark).copyWith(fontSize: 16, color: colorScheme.onSurface.withValues(alpha: 0.5)),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          DateFormat('EEE, MMM dd').format(_now),
-                          style: NothingTheme.metricsStyle.copyWith(fontSize: 16, color: NothingTheme.textMuted),
-                        ),
+                        const SizedBox(height: 16),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(60),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _isEditingTitle
-                          ? TextField(
-                              controller: _titleController,
-                              style: Theme.of(context).textTheme.titleLarge,
-                              decoration: const InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              ),
-                              onSubmitted: (_) => _submitTitle(),
-                            )
-                          : GestureDetector(
-                              onDoubleTap: () => setState(() => _isEditingTitle = true),
-                              child: Text(
-                                context.watch<AppState>().dashboardTitle,
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 28),
-                              ),
-                            ),
-                    ),
-                    if (!_isEditingTitle)
-                      IconButton(
-                        icon: const Icon(Icons.edit, size: 20, color: NothingTheme.textMuted),
-                        onPressed: () => setState(() => _isEditingTitle = true),
-                      ),
-                    if (_isEditingTitle)
-                      IconButton(
-                        icon: const Icon(Icons.check, color: NothingTheme.accent),
-                        onPressed: _submitTitle,
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          
-          // Global Progress
-          SliverToBoxAdapter(
-            child: Consumer<AppState>(
-              builder: (context, state, child) {
-                int totalCompleted = state.subjects.fold(0, (sum, s) => sum + s.completedTopics);
-                int totalTopics = state.subjects.fold(0, (sum, s) => sum + s.totalTopics);
-                double globalProgress = totalTopics == 0 ? 0 : totalCompleted / totalTopics;
-
-                return Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Row(
-                        children: [
-                          CircularPercentIndicator(
-                            radius: 40.0,
-                            lineWidth: 8.0,
-                            animation: true,
-                            percent: globalProgress,
-                            center: Text(
-                              "${(globalProgress * 100).toInt()}%",
-                              style: NothingTheme.metricsStyle.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            circularStrokeCap: CircularStrokeCap.round,
-                            progressColor: NothingTheme.accent,
-                            backgroundColor: NothingTheme.border,
-                          ),
-                          const SizedBox(width: 24),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Total Mastery', style: Theme.of(context).textTheme.titleLarge),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '$totalCompleted of $totalTopics topics completed',
-                                  style: const TextStyle(color: NothingTheme.textMuted),
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(60),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _isEditingTitle
+                              ? TextField(
+                                  controller: _titleController,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  ),
+                                  onSubmitted: (_) => _submitTitle(),
+                                )
+                              : GestureDetector(
+                                  onDoubleTap: () => setState(() => _isEditingTitle = true),
+                                  child: Text(
+                                    context.watch<AppState>().dashboardTitle,
+                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 28),
+                                  ).animate().fade(duration: 800.ms).slideX(begin: -0.1),
                                 ),
-                              ],
-                            ),
+                        ),
+                        if (!_isEditingTitle)
+                          IconButton(
+                            icon: Icon(LucideIcons.edit2, size: 20, color: colorScheme.onSurface.withValues(alpha: 0.5)),
+                            onPressed: () => setState(() => _isEditingTitle = true),
                           ),
-                        ],
-                      ),
+                        if (_isEditingTitle)
+                          IconButton(
+                            icon: const Icon(LucideIcons.check, color: NothingTheme.accent),
+                            onPressed: _submitTitle,
+                          ),
+                      ],
                     ),
                   ),
-                );
-              },
-            ),
-          ),
+                ),
+              ),
+              
+              // Global Progress
+              SliverToBoxAdapter(
+                child: Consumer<AppState>(
+                  builder: (context, state, child) {
+                    int totalCompleted = state.subjects.fold(0, (sum, s) => sum + s.completedTopics);
+                    int totalTopics = state.subjects.fold(0, (sum, s) => sum + s.totalTopics);
+                    double globalProgress = totalTopics == 0 ? 0 : totalCompleted / totalTopics;
 
-          // Subjects List
-          Consumer<AppState>(
-            builder: (context, state, child) {
-              return SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final subject = state.subjects[index];
-                      final daysLeft = subject.examDate.difference(_now).inDays;
-                      final urgencyColor = _getUrgencyColor(daysLeft);
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => SubjectScreen(subjectId: subject.id),
+                    return Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Row(
+                            children: [
+                              CircularPercentIndicator(
+                                radius: 40.0,
+                                lineWidth: 8.0,
+                                animation: true,
+                                animationDuration: 1500,
+                                percent: globalProgress,
+                                center: Text(
+                                  "${(globalProgress * 100).toInt()}%",
+                                  style: NothingTheme.metricsStyle(isDark).copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                circularStrokeCap: CircularStrokeCap.round,
+                                progressColor: NothingTheme.accent,
+                                backgroundColor: colorScheme.onSurface.withValues(alpha: 0.1),
                               ),
-                            );
-                          },
-                          borderRadius: BorderRadius.circular(16),
-                          child: Card(
-                            margin: EdgeInsets.zero,
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(subject.name, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20)),
-                                      IconButton(
-                                        icon: const Icon(Icons.delete_outline, color: NothingTheme.textMuted),
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (ctx) => AlertDialog(
-                                              backgroundColor: NothingTheme.surface,
-                                              title: const Text('Delete Subject?'),
-                                              content: Text('Are you sure you want to delete ${subject.name}?'),
-                                              actions: [
-                                                TextButton(
-                                                  child: const Text('CANCEL', style: TextStyle(color: NothingTheme.textMuted)),
-                                                  onPressed: () => Navigator.pop(ctx),
-                                                ),
-                                                TextButton(
-                                                  child: const Text('DELETE', style: TextStyle(color: NothingTheme.accent)),
-                                                  onPressed: () {
-                                                    context.read<AppState>().deleteSubject(subject.id);
-                                                    Navigator.pop(ctx);
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      )
-                                    ],
+                              const SizedBox(width: 24),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Total Mastery', style: Theme.of(context).textTheme.titleLarge),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '$totalCompleted of $totalTopics topics completed',
+                                      style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ).animate().scale(delay: 200.ms, curve: Curves.easeOutBack),
+                    );
+                  },
+                ),
+              ),
+
+              // Subjects List
+              Consumer<AppState>(
+                builder: (context, state, child) {
+                  return SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final subject = state.subjects[index];
+                          final daysLeft = subject.examDate.difference(_now).inDays;
+                          final urgencyColor = _getUrgencyColor(daysLeft);
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (c, a1, a2) => SubjectScreen(subjectId: subject.id),
+                                    transitionsBuilder: (c, a1, a2, child) => FadeTransition(opacity: a1, child: child),
                                   ),
-                                  const SizedBox(height: 16),
-                                  // Urgency timeline
-                                  Row(
+                                );
+                              },
+                              borderRadius: BorderRadius.circular(16),
+                              child: Card(
+                                margin: EdgeInsets.zero,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Icon(Icons.timer_outlined, size: 16, color: urgencyColor),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        '${daysLeft < 0 ? 0 : daysLeft} days left',
-                                        style: NothingTheme.metricsStyle.copyWith(color: urgencyColor),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(subject.name, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20)),
+                                          IconButton(
+                                            icon: Icon(LucideIcons.trash2, color: colorScheme.onSurface.withValues(alpha: 0.3)),
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (ctx) => AlertDialog(
+                                                  backgroundColor: colorScheme.surface,
+                                                  title: const Text('Delete Subject?'),
+                                                  content: Text('Are you sure you want to delete ${subject.name}?'),
+                                                  actions: [
+                                                    TextButton(
+                                                      child: Text('CANCEL', style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6))),
+                                                      onPressed: () => Navigator.pop(ctx),
+                                                    ),
+                                                    TextButton(
+                                                      child: const Text('DELETE', style: TextStyle(color: NothingTheme.accent)),
+                                                      onPressed: () {
+                                                        context.read<AppState>().deleteSubject(subject.id);
+                                                        Navigator.pop(ctx);
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Row(
+                                        children: [
+                                          Icon(LucideIcons.timer, size: 16, color: urgencyColor),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            '${daysLeft < 0 ? 0 : daysLeft} days left',
+                                            style: NothingTheme.metricsStyle(isDark).copyWith(color: urgencyColor),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      LinearPercentIndicator(
+                                        padding: EdgeInsets.zero,
+                                        lineHeight: 6.0,
+                                        animation: true,
+                                        animationDuration: 1000,
+                                        percent: (30 - (daysLeft.clamp(0, 30))) / 30.0,
+                                        backgroundColor: colorScheme.onSurface.withValues(alpha: 0.1),
+                                        progressColor: urgencyColor,
+                                        barRadius: const Radius.circular(50),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('${subject.completedTopics}/${subject.totalTopics} Topics', style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.5))),
+                                          Text('${(subject.progress * 100).toInt()}%', style: NothingTheme.metricsStyle(isDark)),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 8),
-                                  LinearPercentIndicator(
-                                    padding: EdgeInsets.zero,
-                                    lineHeight: 6.0,
-                                    percent: (30 - (daysLeft.clamp(0, 30))) / 30.0, // Visual representation of approaching date
-                                    backgroundColor: NothingTheme.border,
-                                    progressColor: urgencyColor,
-                                    barRadius: const Radius.circular(50),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  // Subject Progress
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('${subject.completedTopics}/${subject.totalTopics} Topics', style: const TextStyle(color: NothingTheme.textMuted)),
-                                      Text('${(subject.progress * 100).toInt()}%', style: NothingTheme.metricsStyle),
-                                    ],
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    childCount: state.subjects.length,
-                  ),
-                ),
-              );
-            },
+                            ).animate().slideY(begin: 0.2, delay: (200 + (index * 100)).ms).fade(),
+                          );
+                        },
+                        childCount: state.subjects.length,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 100)),
+            ],
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 100)), // Bottom padding for FAB
+          if (_isFabOpen)
+            GestureDetector(
+              onTap: () => setState(() => _isFabOpen = false),
+              child: Container(
+                color: Colors.black.withValues(alpha: 0.5),
+              ).animate().fade(duration: 200.ms),
+            ),
         ],
       ),
     );

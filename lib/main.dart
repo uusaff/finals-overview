@@ -21,11 +21,17 @@ class FinalsOverviewApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Finals Overview',
-      debugShowCheckedModeBanner: false,
-      theme: NothingTheme.darkTheme,
-      home: const LoginScreen(),
+    return Consumer<AppState>(
+      builder: (context, state, child) {
+        return MaterialApp(
+          title: 'Finals Overview',
+          debugShowCheckedModeBanner: false,
+          theme: NothingTheme.getTheme(isDark: false),
+          darkTheme: NothingTheme.getTheme(isDark: true),
+          themeMode: state.themeMode,
+          home: const LoginScreen(),
+        );
+      },
     );
   }
 }

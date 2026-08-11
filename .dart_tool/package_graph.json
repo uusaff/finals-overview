@@ -7,10 +7,14 @@
       "name": "finals_overview",
       "version": "1.0.0+1",
       "dependencies": [
+        "confetti",
         "cupertino_icons",
+        "fl_chart",
         "flutter",
+        "flutter_animate",
         "google_fonts",
         "intl",
+        "lucide_icons",
         "percent_indicator",
         "provider"
       ],
@@ -42,6 +46,38 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "fl_chart",
+      "version": "1.2.0",
+      "dependencies": [
+        "equatable",
+        "flutter",
+        "vector_math"
+      ]
+    },
+    {
+      "name": "confetti",
+      "version": "0.8.0",
+      "dependencies": [
+        "flutter",
+        "vector_math"
+      ]
+    },
+    {
+      "name": "lucide_icons",
+      "version": "0.257.0",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
+      "name": "flutter_animate",
+      "version": "4.5.2",
+      "dependencies": [
+        "flutter",
+        "flutter_shaders"
       ]
     },
     {
@@ -500,6 +536,22 @@
         "collection",
         "meta",
         "pub_semver"
+      ]
+    },
+    {
+      "name": "flutter_shaders",
+      "version": "0.1.3",
+      "dependencies": [
+        "flutter",
+        "vector_math"
+      ]
+    },
+    {
+      "name": "equatable",
+      "version": "2.1.0",
+      "dependencies": [
+        "collection",
+        "meta"
       ]
     }
   ],

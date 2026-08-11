@@ -2,39 +2,52 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class NothingTheme {
-  // Colors
-  static const Color background = Color(0xFF0A0A0A);
-  static const Color surface = Color(0xFF151515);
-  static const Color border = Color(0x1AFFFFFF); // rgba(255,255,255,0.1)
+  // Shared
   static const Color accent = Color(0xFFE51D2A);
-  static const Color accentHover = Color(0xFFFF2A38);
-  static const Color textPrimary = Color(0xFFF0F0F0);
-  static const Color textMuted = Color(0xFF888888);
 
-  // Theme Data
-  static ThemeData get darkTheme {
+  // Dark Mode Colors
+  static const Color darkBackground = Color(0xFF0A0A0A);
+  static const Color darkSurface = Color(0xFF151515);
+  static const Color darkBorder = Color(0x1AFFFFFF); // rgba(255,255,255,0.1)
+  static const Color darkTextPrimary = Color(0xFFF0F0F0);
+  static const Color darkTextMuted = Color(0xFF888888);
+
+  // Light Mode Colors
+  static const Color lightBackground = Color(0xFFF5F5F5);
+  static const Color lightSurface = Color(0xFFFFFFFF);
+  static const Color lightBorder = Color(0x1A000000); // rgba(0,0,0,0.1)
+  static const Color lightTextPrimary = Color(0xFF111111);
+  static const Color lightTextMuted = Color(0xFF777777);
+
+  // Theme Data Builder
+  static ThemeData getTheme({required bool isDark}) {
+    final background = isDark ? darkBackground : lightBackground;
+    final surface = isDark ? darkSurface : lightSurface;
+    final textPrimary = isDark ? darkTextPrimary : lightTextPrimary;
+    final textMuted = isDark ? darkTextMuted : lightTextMuted;
+    final border = isDark ? darkBorder : lightBorder;
+
+    final baseTextTheme = isDark ? ThemeData.dark().textTheme : ThemeData.light().textTheme;
+    
     return ThemeData(
-      brightness: Brightness.dark,
+      brightness: isDark ? Brightness.dark : Brightness.light,
       scaffoldBackgroundColor: background,
       primaryColor: accent,
-      colorScheme: const ColorScheme.dark(
-        primary: accent,
-        surface: surface,
-        onPrimary: Colors.white,
-        onSurface: textPrimary,
-      ),
-      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
+      colorScheme: isDark 
+          ? ColorScheme.dark(primary: accent, surface: surface, onPrimary: Colors.white, onSurface: textPrimary)
+          : ColorScheme.light(primary: accent, surface: surface, onPrimary: Colors.white, onSurface: textPrimary),
+      textTheme: GoogleFonts.interTextTheme(baseTextTheme).copyWith(
         bodyLarge: GoogleFonts.inter(color: textPrimary, fontWeight: FontWeight.w400),
         bodyMedium: GoogleFonts.inter(color: textPrimary, fontWeight: FontWeight.w400),
         titleLarge: GoogleFonts.inter(color: textPrimary, fontWeight: FontWeight.w800, letterSpacing: -0.5),
-        labelLarge: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w600),
+        labelLarge: GoogleFonts.inter(color: isDark ? Colors.white : Colors.white, fontWeight: FontWeight.w600),
       ),
       cardTheme: CardThemeData(
         color: surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: border, width: 1),
+          side: BorderSide(color: border, width: 1),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -42,15 +55,15 @@ class NothingTheme {
         fillColor: background,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(50),
-          borderSide: const BorderSide(color: border, width: 1),
+          borderSide: BorderSide(color: border, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(50),
-          borderSide: const BorderSide(color: border, width: 1),
+          borderSide: BorderSide(color: border, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(50),
-          borderSide: const BorderSide(color: accent, width: 1),
+          borderSide: BorderSide(color: accent, width: 1),
         ),
         labelStyle: GoogleFonts.inter(color: textMuted),
         hintStyle: GoogleFonts.inter(color: textMuted),
@@ -67,11 +80,18 @@ class NothingTheme {
           textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600),
         ),
       ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: background,
+        elevation: 0,
+        iconTheme: IconThemeData(color: textPrimary),
+        titleTextStyle: GoogleFonts.inter(color: textPrimary, fontWeight: FontWeight.w800, fontSize: 20),
+      ),
+      iconTheme: IconThemeData(color: textPrimary),
+      dialogBackgroundColor: surface,
     );
   }
 
-  // Helper for metrics font
-  static TextStyle get metricsStyle => GoogleFonts.shareTechMono(
-        color: textPrimary,
+  static TextStyle metricsStyle(bool isDark) => GoogleFonts.shareTechMono(
+        color: isDark ? darkTextPrimary : lightTextPrimary,
       );
 }

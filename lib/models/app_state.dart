@@ -31,6 +31,7 @@ class Topic {
 }
 
 class AppState extends ChangeNotifier {
+  ThemeMode themeMode = ThemeMode.dark;
   String dashboardTitle = "Finals Overview";
   
   List<Subject> subjects = [
@@ -83,6 +84,11 @@ class AppState extends ChangeNotifier {
   void addTopic(String subjectId, String topicName) {
     final subject = subjects.firstWhere((s) => s.id == subjectId);
     subject.topics.add(Topic(id: DateTime.now().toString(), name: topicName));
+    notifyListeners();
+  }
+
+  void toggleTheme() {
+    themeMode = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
     notifyListeners();
   }
 }
