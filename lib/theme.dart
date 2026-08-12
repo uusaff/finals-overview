@@ -100,7 +100,7 @@ class NothingTheme {
         }),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return const IconThemeData(color: accent);
+            return IconThemeData(color: accent);
           }
           return IconThemeData(color: textPrimary);
         }),

@@ -256,7 +256,7 @@ class _LoginScreenState extends State<LoginScreen> {
               
               // Social Logins
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenfully,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildSocialButton(Icons.g_mobiledata_rounded, 'Google', _submitGoogle, colorScheme),
                   _buildSocialButton(Icons.apple_rounded, 'Apple', _submitApple, colorScheme),

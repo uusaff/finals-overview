@@ -46,7 +46,7 @@ dependencies:
   cloud_firestore: ^6.8.0
   wakelock_plus: ^1.7.0
   table_calendar: ^3.2.1
-  google_sign_in: ^7.2.0
+  google_sign_in: ^6.2.1
   sign_in_with_apple: ^8.1.0
   purchases_flutter: ^10.8.0
   flutter_localizations:
