@@ -5,7 +5,7 @@
   "packages": [
     {
       "name": "finals_overview",
-      "version": "1.0.0+1",
+      "version": "1.2.0+3",
       "dependencies": [
         "cloud_firestore",
         "confetti",
@@ -15,10 +15,14 @@
         "fl_chart",
         "flutter",
         "flutter_animate",
+        "flutter_localizations",
         "google_fonts",
+        "google_sign_in",
         "intl",
         "percent_indicator",
         "provider",
+        "purchases_flutter",
+        "sign_in_with_apple",
         "table_calendar",
         "wakelock_plus"
       ],
@@ -50,6 +54,47 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "flutter_localizations",
+      "version": "0.0.0",
+      "dependencies": [
+        "flutter",
+        "intl",
+        "path"
+      ]
+    },
+    {
+      "name": "purchases_flutter",
+      "version": "10.8.0",
+      "dependencies": [
+        "equatable",
+        "flutter",
+        "flutter_web_plugins",
+        "meta",
+        "web"
+      ]
+    },
+    {
+      "name": "sign_in_with_apple",
+      "version": "8.1.0",
+      "dependencies": [
+        "flutter",
+        "meta",
+        "sign_in_with_apple_platform_interface",
+        "sign_in_with_apple_web"
+      ]
+    },
+    {
+      "name": "google_sign_in",
+      "version": "7.2.0",
+      "dependencies": [
+        "flutter",
+        "google_sign_in_android",
+        "google_sign_in_ios",
+        "google_sign_in_platform_interface",
+        "google_sign_in_web"
       ]
     },
     {
@@ -144,7 +189,7 @@
     },
     {
       "name": "intl",
-      "version": "0.20.3",
+      "version": "0.20.2",
       "dependencies": [
         "clock",
         "meta",
@@ -277,9 +322,86 @@
       ]
     },
     {
+      "name": "equatable",
+      "version": "2.1.0",
+      "dependencies": [
+        "collection",
+        "meta"
+      ]
+    },
+    {
       "name": "web",
       "version": "1.1.1",
       "dependencies": []
+    },
+    {
+      "name": "flutter_web_plugins",
+      "version": "0.0.0",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
+      "name": "sign_in_with_apple_web",
+      "version": "3.0.0",
+      "dependencies": [
+        "flutter",
+        "flutter_web_plugins",
+        "sign_in_with_apple_platform_interface"
+      ]
+    },
+    {
+      "name": "sign_in_with_apple_platform_interface",
+      "version": "2.0.0",
+      "dependencies": [
+        "flutter",
+        "meta",
+        "plugin_platform_interface"
+      ]
+    },
+    {
+      "name": "google_sign_in_web",
+      "version": "1.1.3",
+      "dependencies": [
+        "flutter",
+        "flutter_web_plugins",
+        "google_identity_services_web",
+        "google_sign_in_platform_interface",
+        "http",
+        "web"
+      ]
+    },
+    {
+      "name": "google_sign_in_platform_interface",
+      "version": "3.1.0",
+      "dependencies": [
+        "flutter",
+        "plugin_platform_interface"
+      ]
+    },
+    {
+      "name": "google_sign_in_ios",
+      "version": "6.3.0",
+      "dependencies": [
+        "flutter",
+        "google_sign_in_platform_interface"
+      ]
+    },
+    {
+      "name": "google_sign_in_android",
+      "version": "7.2.16",
+      "dependencies": [
+        "flutter",
+        "google_sign_in_platform_interface",
+        "meta"
+      ]
+    },
+    {
+      "name": "simple_gesture_detector",
+      "version": "0.2.1",
+      "dependencies": [
+        "flutter"
+      ]
     },
     {
       "name": "package_info_plus",
@@ -323,13 +445,6 @@
         "flutter",
         "meta",
         "plugin_platform_interface"
-      ]
-    },
-    {
-      "name": "flutter_web_plugins",
-      "version": "0.0.0",
-      "dependencies": [
-        "flutter"
       ]
     },
     {
@@ -404,14 +519,6 @@
         "flutter_web_plugins",
         "meta",
         "web"
-      ]
-    },
-    {
-      "name": "equatable",
-      "version": "2.1.0",
-      "dependencies": [
-        "collection",
-        "meta"
       ]
     },
     {
@@ -533,6 +640,21 @@
       ]
     },
     {
+      "name": "plugin_platform_interface",
+      "version": "2.1.8",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
+      "name": "google_identity_services_web",
+      "version": "0.3.3+1",
+      "dependencies": [
+        "meta",
+        "web"
+      ]
+    },
+    {
       "name": "package_info_plus_platform_interface",
       "version": "4.1.0",
       "dependencies": [
@@ -565,13 +687,6 @@
       "version": "0.1.2",
       "dependencies": [
         "ffi"
-      ]
-    },
-    {
-      "name": "plugin_platform_interface",
-      "version": "2.1.8",
-      "dependencies": [
-        "meta"
       ]
     },
     {
@@ -776,13 +891,6 @@
         "collection",
         "meta",
         "pub_semver"
-      ]
-    },
-    {
-      "name": "simple_gesture_detector",
-      "version": "0.2.1",
-      "dependencies": [
-        "flutter"
       ]
     }
   ],

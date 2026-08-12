@@ -62,8 +62,24 @@ class Exam {
 
 class AppState extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.dark;
-  String dashboardTitle = "Finals Tracker"; // Updated name
+  String dashboardTitle = "Finals Tracker";
+  bool isPro = false;
+  Color accentColor = const Color(0xFFE51D2A); // Default Red
+  Color? customBackgroundColor;
+  String? customBackgroundImage;
   
+  void setProStatus(bool status) {
+    isPro = status;
+    notifyListeners();
+  }
+
+  void updateTheme({Color? accent, Color? background, String? bgImage}) {
+    if (accent != null) accentColor = accent;
+    if (background != null) customBackgroundColor = background;
+    if (bgImage != null) customBackgroundImage = bgImage;
+    notifyListeners();
+  }
+
   List<Subject> subjects = [
     Subject(
       id: "1",

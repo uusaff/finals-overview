@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
 import '../theme.dart';
 import 'main_layout.dart';
 
@@ -15,6 +18,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isSignup = false;
   bool _isLoading = false;
+  String _selectedLanguage = 'English';
+
+  final List<String> _languages = ['English', 'Español', 'Français', 'Urdu'];
 
   // Password strength checks
   bool _hasMinLength = false;
@@ -35,26 +41,54 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool get _isPasswordValid => _hasMinLength && _hasUpper && _hasLower && _hasNumber && _hasSpecial;
 
-  void _submit() async {
+  void _submitEmailPassword() async {
     if (_isSignup && !_isPasswordValid) return;
     
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please fill in all fields', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          behavior: SnackBarBehavior.floating,
-        ),
+        const SnackBar(content: Text('Please fill in all fields')),
       );
       return;
     }
 
     setState(() => _isLoading = true);
     
-    // Simulate network request
-    await Future.delayed(const Duration(seconds: 1));
-    
-    if (!mounted) return;
+    try {
+      final authService = context.read<AuthService>();
+      if (_isSignup) {
+        await authService.signUpWithEmail(_emailController.text, _passwordController.text);
+      } else {
+        await authService.signInWithEmail(_emailController.text, _passwordController.text);
+      }
+      if (!mounted) return;
+      _navigateToMain();
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message ?? 'Authentication failed')));
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _submitGoogle() async {
+    setState(() => _isLoading = true);
+    try {
+      await context.read<AuthService>().signInWithGoogle();
+      if (!mounted) return;
+      _navigateToMain();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Google Sign-In failed or canceled')));
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+  
+  void _submitApple() async {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Apple Sign-In requires a physical iOS device and Developer Account.')));
+  }
+
+  void _navigateToMain() {
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => const MainLayout(),
@@ -95,6 +129,26 @@ class _LoginScreenState extends State<LoginScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: DropdownButton<String>(
+              value: _selectedLanguage,
+              underline: const SizedBox(),
+              icon: Icon(Icons.language_rounded, color: colorScheme.onSurface),
+              items: _languages.map((lang) {
+                return DropdownMenuItem(value: lang, child: Text(lang));
+              }).toList(),
+              onChanged: (val) {
+                if (val != null) setState(() => _selectedLanguage = val);
+              },
+            ),
+          ),
+        ],
+      ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -170,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: (_isSignup && !_isPasswordValid) || _isLoading ? null : _submit,
+                  onPressed: (_isSignup && !_isPasswordValid) || _isLoading ? null : _submitEmailPassword,
                   child: _isLoading 
                       ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                       : Text(_isSignup ? 'SIGN UP' : 'LOGIN', style: const TextStyle(letterSpacing: 1.2)),
@@ -186,8 +240,52 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6)),
                 ),
               ).animate().fade(delay: 600.ms),
+
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(child: Divider(color: colorScheme.onSurface.withValues(alpha: 0.2))),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text('OR', style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.5), fontSize: 12)),
+                  ),
+                  Expanded(child: Divider(color: colorScheme.onSurface.withValues(alpha: 0.2))),
+                ],
+              ),
+              const SizedBox(height: 24),
+              
+              // Social Logins
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenfully,
+                children: [
+                  _buildSocialButton(Icons.g_mobiledata_rounded, 'Google', _submitGoogle, colorScheme),
+                  _buildSocialButton(Icons.apple_rounded, 'Apple', _submitApple, colorScheme),
+                ],
+              ).animate().fade(delay: 700.ms).slideY(begin: 0.2, end: 0),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialButton(IconData icon, String label, VoidCallback onTap, ColorScheme colorScheme) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: colorScheme.onSurface.withValues(alpha: 0.1)),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 24, color: colorScheme.onSurface),
+            const SizedBox(width: 8),
+            Text(label, style: TextStyle(fontWeight: FontWeight.bold, color: colorScheme.onSurface)),
+          ],
         ),
       ),
     );

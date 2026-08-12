@@ -20,8 +20,12 @@ class NothingTheme {
   static const Color lightTextMuted = Color(0xFF777777);
 
   // Theme Data Builder
-  static ThemeData getTheme({required bool isDark}) {
-    final background = isDark ? darkBackground : lightBackground;
+  static ThemeData getTheme({
+    required bool isDark,
+    Color accent = NothingTheme.accent,
+    Color? customBackground,
+  }) {
+    final background = customBackground ?? (isDark ? darkBackground : lightBackground);
     final surface = isDark ? darkSurface : lightSurface;
     final textPrimary = isDark ? darkTextPrimary : lightTextPrimary;
     final textMuted = isDark ? darkTextMuted : lightTextMuted;
@@ -85,6 +89,21 @@ class NothingTheme {
         elevation: 0,
         iconTheme: IconThemeData(color: textPrimary),
         titleTextStyle: GoogleFonts.inter(color: textPrimary, fontWeight: FontWeight.w800, fontSize: 20),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        indicatorColor: accent.withValues(alpha: 0.2),
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return GoogleFonts.inter(color: accent, fontWeight: FontWeight.w700, fontSize: 12);
+          }
+          return GoogleFonts.inter(color: textPrimary, fontWeight: FontWeight.w500, fontSize: 12);
+        }),
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return const IconThemeData(color: accent);
+          }
+          return IconThemeData(color: textPrimary);
+        }),
       ),
       iconTheme: IconThemeData(color: textPrimary),
       dialogBackgroundColor: surface,

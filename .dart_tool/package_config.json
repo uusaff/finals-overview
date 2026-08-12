@@ -176,6 +176,12 @@
       "languageVersion": "3.8"
     },
     {
+      "name": "flutter_localizations",
+      "rootUri": "file:///C:/src/flutter/packages/flutter_localizations",
+      "packageUri": "lib/",
+      "languageVersion": "3.10"
+    },
+    {
       "name": "flutter_shaders",
       "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_shaders-0.1.3",
       "packageUri": "lib/",
@@ -200,6 +206,42 @@
       "languageVersion": "3.10"
     },
     {
+      "name": "google_identity_services_web",
+      "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.3.3+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "google_sign_in",
+      "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in-7.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "google_sign_in_android",
+      "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_android-7.2.16",
+      "packageUri": "lib/",
+      "languageVersion": "3.12"
+    },
+    {
+      "name": "google_sign_in_ios",
+      "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_ios-6.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.10"
+    },
+    {
+      "name": "google_sign_in_platform_interface",
+      "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_platform_interface-3.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "google_sign_in_web",
+      "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-1.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
       "name": "hooks",
       "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/hooks-2.0.2",
       "packageUri": "lib/",
@@ -219,9 +261,9 @@
     },
     {
       "name": "intl",
-      "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.20.3",
+      "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.20.2",
       "packageUri": "lib/",
-      "languageVersion": "3.9"
+      "languageVersion": "3.3"
     },
     {
       "name": "jni",
@@ -398,10 +440,34 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "purchases_flutter",
+      "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/purchases_flutter-10.8.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "record_use",
       "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/record_use-0.6.0",
       "packageUri": "lib/",
       "languageVersion": "3.10"
+    },
+    {
+      "name": "sign_in_with_apple",
+      "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/sign_in_with_apple-8.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.11"
+    },
+    {
+      "name": "sign_in_with_apple_platform_interface",
+      "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/sign_in_with_apple_platform_interface-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "sign_in_with_apple_web",
+      "rootUri": "file:///C:/Users/malik/AppData/Local/Pub/Cache/hosted/pub.dev/sign_in_with_apple_web-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "simple_gesture_detector",
