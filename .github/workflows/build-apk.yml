@@ -29,6 +29,20 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
 
+      - name: Setup Keystore from Secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        run: |
+          [IO.File]::WriteAllBytes("android/app/upload-keystore.jks", [Convert]::FromBase64String($env:KEYSTORE_BASE64))
+          @"
+          storePassword=$env:STORE_PASSWORD
+          keyPassword=$env:KEY_PASSWORD
+          keyAlias=upload
+          storeFile=upload-keystore.jks
+          "@ | Out-File -FilePath android/key.properties -Encoding utf8
+
       - name: Build APK
         run: flutter build apk --release
 
