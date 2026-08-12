@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 class Subject {
   String id;
   String name;
-  DateTime examDate;
+  String courseCode;
+  String instructor;
   List<Topic> topics;
 
   Subject({
     required this.id,
     required this.name,
-    required this.examDate,
+    this.courseCode = '',
+    this.instructor = '',
     required this.topics,
   });
 
@@ -30,40 +32,101 @@ class Topic {
   });
 }
 
+class Exam {
+  String id;
+  String subjectId;
+  String type; // e.g. Midterm, Final
+  DateTime date;
+  TimeOfDay startTime;
+  TimeOfDay endTime;
+  String room;
+  String teacher;
+  String notes;
+  String priority; // High, Medium, Low
+  bool isCompleted;
+
+  Exam({
+    required this.id,
+    required this.subjectId,
+    this.type = 'Final Exam',
+    required this.date,
+    required this.startTime,
+    required this.endTime,
+    this.room = '',
+    this.teacher = '',
+    this.notes = '',
+    this.priority = 'Medium',
+    this.isCompleted = false,
+  });
+}
+
 class AppState extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.dark;
-  String dashboardTitle = "Finals Overview";
+  String dashboardTitle = "Finals Tracker"; // Updated name
   
   List<Subject> subjects = [
     Subject(
       id: "1",
-      name: "Mathematics",
-      examDate: DateTime.now().add(const Duration(days: 5)),
+      name: "Data Structures",
+      courseCode: "CS-201",
+      instructor: "Dr. Smith",
       topics: [
-        Topic(id: "1", name: "Calculus", isCompleted: true),
-        Topic(id: "2", name: "Linear Algebra"),
+        Topic(id: "1", name: "Arrays & Linked Lists", isCompleted: true),
+        Topic(id: "2", name: "Trees & Graphs"),
       ],
     ),
     Subject(
       id: "2",
-      name: "Physics",
-      examDate: DateTime.now().add(const Duration(days: 2)),
+      name: "Assembly Language",
+      courseCode: "CS-202",
+      instructor: "Prof. Johnson",
       topics: [
-        Topic(id: "3", name: "Thermodynamics"),
+        Topic(id: "3", name: "Registers & Memory"),
       ],
     ),
   ];
+
+  List<Exam> exams = [];
+
+  AppState() {
+    // Generate dummy exams
+    exams = [
+      Exam(
+        id: "1",
+        subjectId: "1",
+        type: "Final Exam",
+        date: DateTime.now().add(const Duration(days: 2)),
+        startTime: const TimeOfDay(hour: 8, minute: 30),
+        endTime: const TimeOfDay(hour: 10, minute: 30),
+        room: "Room 204",
+        teacher: "Dr. Smith",
+        priority: "High",
+      ),
+      Exam(
+        id: "2",
+        subjectId: "2",
+        type: "Midterm",
+        date: DateTime.now().add(const Duration(days: 5)),
+        startTime: const TimeOfDay(hour: 14, minute: 0),
+        endTime: const TimeOfDay(hour: 16, minute: 0),
+        room: "Hall A",
+        teacher: "Prof. Johnson",
+        priority: "Medium",
+      ),
+    ];
+  }
 
   void updateDashboardTitle(String newTitle) {
     dashboardTitle = newTitle;
     notifyListeners();
   }
 
-  void addSubject(String name, DateTime date) {
+  void addSubject(String name, String courseCode, String instructor) {
     subjects.add(Subject(
       id: DateTime.now().toString(),
       name: name,
-      examDate: date,
+      courseCode: courseCode,
+      instructor: instructor,
       topics: [],
     ));
     notifyListeners();
@@ -71,6 +134,32 @@ class AppState extends ChangeNotifier {
 
   void deleteSubject(String id) {
     subjects.removeWhere((s) => s.id == id);
+    // Cascade delete exams
+    exams.removeWhere((e) => e.subjectId == id);
+    notifyListeners();
+  }
+
+  void addExam(Exam exam) {
+    exams.add(exam);
+    notifyListeners();
+  }
+
+  void updateExam(Exam updatedExam) {
+    final index = exams.indexWhere((e) => e.id == updatedExam.id);
+    if (index != -1) {
+      exams[index] = updatedExam;
+      notifyListeners();
+    }
+  }
+
+  void deleteExam(String id) {
+    exams.removeWhere((e) => e.id == id);
+    notifyListeners();
+  }
+
+  void toggleExamCompletion(String id) {
+    final exam = exams.firstWhere((e) => e.id == id);
+    exam.isCompleted = !exam.isCompleted;
     notifyListeners();
   }
 
