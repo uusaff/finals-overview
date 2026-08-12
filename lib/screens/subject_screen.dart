@@ -70,7 +70,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
             },
           ),
           TextButton(
-            child: const Text('ADD', style: TextStyle(color: NothingTheme.accent)),
+            child: Text('ADD', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
             onPressed: () {
               if (_topicController.text.isNotEmpty) {
                 context.read<AppState>().addTopic(widget.subjectId, _topicController.text);
@@ -105,7 +105,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showAddTopicDialog,
-        backgroundColor: NothingTheme.accent,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         icon: const Icon(Icons.add_rounded, color: Colors.white),
         label: const Text('ADD TOPIC', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ).animate().scale(delay: 500.ms, curve: Curves.easeOutBack),
@@ -155,7 +155,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                       color: topic.isCompleted ? colorScheme.surface.withValues(alpha: 0.5) : colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: topic.isCompleted ? NothingTheme.accent.withValues(alpha: 0.3) : colorScheme.onSurface.withValues(alpha: 0.1),
+                        color: topic.isCompleted ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3) : colorScheme.onSurface.withValues(alpha: 0.1),
                       ),
                     ),
                     child: ListTile(
@@ -169,9 +169,9 @@ class _SubjectScreenState extends State<SubjectScreen> {
                           height: 28,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: topic.isCompleted ? NothingTheme.accent : Colors.transparent,
+                            color: topic.isCompleted ? Theme.of(context).colorScheme.primary : Colors.transparent,
                             border: Border.all(
-                              color: topic.isCompleted ? NothingTheme.accent : colorScheme.onSurface.withValues(alpha: 0.3),
+                              color: topic.isCompleted ? Theme.of(context).colorScheme.primary : colorScheme.onSurface.withValues(alpha: 0.3),
                               width: 2,
                             ),
                           ),

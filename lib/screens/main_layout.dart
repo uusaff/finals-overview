@@ -110,7 +110,7 @@ class _MainLayoutState extends State<MainLayout> {
         FloatingActionButton.small(
           heroTag: label,
           onPressed: onTap,
-          backgroundColor: isAccent ? NothingTheme.accent : colorScheme.surface,
+          backgroundColor: isAccent ? Theme.of(context).colorScheme.primary : colorScheme.surface,
           foregroundColor: isAccent ? Colors.white : colorScheme.onSurface,
           elevation: 2,
           child: Icon(icon),
@@ -168,7 +168,7 @@ class _MainLayoutState extends State<MainLayout> {
           ],
           FloatingActionButton(
             onPressed: () => setState(() => _isFabOpen = !_isFabOpen),
-            backgroundColor: _isFabOpen ? colorScheme.surface : NothingTheme.accent,
+            backgroundColor: _isFabOpen ? colorScheme.surface : Theme.of(context).colorScheme.primary,
             foregroundColor: _isFabOpen ? colorScheme.onSurface : Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),

@@ -48,7 +48,7 @@ class _AiGeneratorScreenState extends State<AiGeneratorScreen> {
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        const Icon(Icons.auto_awesome_rounded, size: 64, color: NothingTheme.accent)
+        Icon(Icons.auto_awesome_rounded, size: 64, color: Theme.of(context).colorScheme.primary)
             .animate(onPlay: (c) => c.repeat(reverse: true))
             .scaleXY(begin: 0.9, end: 1.1, duration: 2.seconds)
             .tint(color: Colors.white, duration: 2.seconds),
@@ -81,7 +81,7 @@ class _AiGeneratorScreenState extends State<AiGeneratorScreen> {
               : const Icon(Icons.auto_awesome_rounded, color: Colors.black),
           label: Text(_isGenerating ? 'GENERATING...' : 'GENERATE PLAN', style: const TextStyle(color: Colors.black)),
           style: ElevatedButton.styleFrom(
-            backgroundColor: NothingTheme.accent,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             padding: const EdgeInsets.symmetric(vertical: 16),
           ),
         ).animate().slideY(begin: 0.1, delay: 600.ms).fadeIn(),
@@ -130,7 +130,7 @@ class _AiGeneratorScreenState extends State<AiGeneratorScreen> {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
-        leading: const Icon(Icons.adjust_rounded, color: NothingTheme.accent),
+        leading: Icon(Icons.adjust_rounded, color: Theme.of(context).colorScheme.primary),
         title: Text(title),
       ),
     ).animate().slideX(begin: 0.1, delay: 400.ms).fadeIn();

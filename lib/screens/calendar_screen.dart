@@ -61,12 +61,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     shape: BoxShape.circle,
                   ),
                   todayTextStyle: TextStyle(color: colorScheme.onSurface),
-                  selectedDecoration: const BoxDecoration(
-                    color: NothingTheme.accent,
+                  selectedDecoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
                     shape: BoxShape.circle,
                   ),
-                  markerDecoration: const BoxDecoration(
-                    color: NothingTheme.accent,
+                  markerDecoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -144,7 +144,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                     ],
                                   ),
                                   const SizedBox(height: 4),
-                                  Text(exam.type, style: const TextStyle(fontSize: 12, color: NothingTheme.accent, fontWeight: FontWeight.bold)),
+                                  Text(exam.type, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)),
                                 ],
                               ),
                             ),
@@ -153,7 +153,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                               onChanged: (_) {
                                 context.read<AppState>().toggleExamCompletion(exam.id);
                               },
-                              activeColor: NothingTheme.accent,
+                              activeColor: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                         ).animate().slideY(begin: 0.2).fade();

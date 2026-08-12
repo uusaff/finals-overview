@@ -76,7 +76,7 @@ class SubjectsListScreen extends StatelessWidget {
                                           onPressed: () => Navigator.pop(ctx),
                                         ),
                                         TextButton(
-                                          child: const Text('DELETE', style: TextStyle(color: NothingTheme.accent)),
+                                          child: Text('DELETE', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
                                           onPressed: () {
                                             context.read<AppState>().deleteSubject(subject.id);
                                             Navigator.pop(ctx);
@@ -105,7 +105,7 @@ class SubjectsListScreen extends StatelessWidget {
                             animationDuration: 1000,
                             percent: subject.progress,
                             backgroundColor: colorScheme.onSurface.withValues(alpha: 0.1),
-                            progressColor: subject.progress == 1.0 ? Colors.green : NothingTheme.accent,
+                            progressColor: subject.progress == 1.0 ? Colors.green : Theme.of(context).colorScheme.primary,
                             barRadius: const Radius.circular(50),
                           ),
                           const SizedBox(height: 16),

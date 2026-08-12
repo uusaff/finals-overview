@@ -156,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Icon(Icons.school_rounded, size: 48, color: NothingTheme.accent)
+              Icon(Icons.school_rounded, size: 48, color: Theme.of(context).colorScheme.primary)
                   .animate()
                   .scale(delay: 200.ms, duration: 600.ms, curve: Curves.easeOutBack)
                   .fadeIn(),
@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 8),
               Text(
                 'Finals Overview',
-                style: NothingTheme.metricsStyle(isDark).copyWith(color: NothingTheme.accent, fontSize: 16),
+                style: NothingTheme.metricsStyle(isDark).copyWith(color: Theme.of(context).colorScheme.primary, fontSize: 16),
                 textAlign: TextAlign.center,
               ).animate().fade(delay: 200.ms).slideY(begin: 0.2, end: 0),
               const SizedBox(height: 48),

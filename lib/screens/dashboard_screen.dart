@@ -71,7 +71,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               // Next Exam Countdown Widget
               if (nextExam != null)
                 Card(
-                  color: NothingTheme.accent,
+                  color: Theme.of(context).colorScheme.primary,
                   child: Padding(
                     padding: const EdgeInsets.all(24),
                     child: Column(
@@ -132,7 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           style: NothingTheme.metricsStyle(isDark).copyWith(fontWeight: FontWeight.bold),
                         ),
                         circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: NothingTheme.accent,
+                        progressColor: Theme.of(context).colorScheme.primary,
                         backgroundColor: colorScheme.onSurface.withValues(alpha: 0.1),
                       ),
                       const SizedBox(width: 24),
@@ -161,7 +161,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('UPCOMING EXAMS', style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.5), fontWeight: FontWeight.bold, letterSpacing: 2)),
-                  TextButton(onPressed: () {}, child: const Text('See All', style: TextStyle(color: NothingTheme.accent))),
+                  TextButton(onPressed: () {}, child: Text('See All', style: TextStyle(color: Theme.of(context).colorScheme.primary))),
                 ],
               ),
               
@@ -188,7 +188,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(DateFormat('MMM').format(exam.date).toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: NothingTheme.accent)),
+                          Text(DateFormat('MMM').format(exam.date).toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary)),
                           Text(DateFormat('dd').format(exam.date), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         ],
                       ),

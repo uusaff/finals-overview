@@ -246,6 +246,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
 
+          const SizedBox(height: 32),
+          Text('App Appearance', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded, color: colorScheme.primary),
+            title: Text(isDark ? 'Dark Mode' : 'Light Mode'),
+            trailing: Switch(
+              value: isDark,
+              onChanged: (val) {
+                context.read<AppState>().toggleTheme();
+              },
+              activeColor: colorScheme.primary,
+            ),
+          ),
+          
           const SizedBox(height: 48),
 
           // Auth / Signout

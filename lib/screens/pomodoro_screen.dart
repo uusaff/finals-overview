@@ -74,7 +74,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                     value: progress,
                     strokeWidth: 8,
                     backgroundColor: colorScheme.onSurface.withValues(alpha: 0.05),
-                    color: NothingTheme.accent,
+                    color: Theme.of(context).colorScheme.primary,
                     strokeCap: StrokeCap.round,
                   ),
                 ),
@@ -104,7 +104,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                 
                 FloatingActionButton.large(
                   onPressed: _toggleTimer,
-                  backgroundColor: _isRunning ? colorScheme.surface : NothingTheme.accent,
+                  backgroundColor: _isRunning ? colorScheme.surface : Theme.of(context).colorScheme.primary,
                   foregroundColor: _isRunning ? colorScheme.onSurface : Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(

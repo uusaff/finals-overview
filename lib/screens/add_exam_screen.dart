@@ -35,7 +35,7 @@ class _AddExamScreenState extends State<AddExamScreen> {
         title: const Text('Add Exam'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.check_rounded, color: NothingTheme.accent),
+            icon: Icon(Icons.check_rounded, color: Theme.of(context).colorScheme.primary),
             onPressed: _saveExam,
           ),
         ],
@@ -144,7 +144,7 @@ class _AddExamScreenState extends State<AddExamScreen> {
                 onPressed: _saveExam,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: NothingTheme.accent,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('SAVE EXAM', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1)),

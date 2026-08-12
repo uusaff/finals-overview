@@ -34,7 +34,7 @@ class PaywallScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Spacer(),
-                const Icon(Icons.workspace_premium_rounded, size: 80, color: NothingTheme.accent)
+                Icon(Icons.workspace_premium_rounded, size: 80, color: Theme.of(context).colorScheme.primary)
                     .animate(onPlay: (controller) => controller.repeat(reverse: true))
                     .scaleXY(begin: 1, end: 1.1, duration: 2.seconds)
                     .shimmer(duration: 2.seconds),
@@ -70,7 +70,7 @@ class PaywallScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(colors: [NothingTheme.accent, Color(0xFFFF5E62)]),
+                    gradient: LinearGradient(colors: [Theme.of(context).colorScheme.primary, Color(0xFFFF5E62)]),
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: ElevatedButton(
@@ -112,10 +112,10 @@ class PaywallScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: NothingTheme.accent.withValues(alpha: 0.2),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
             shape: BoxShape.circle,
           ),
-          child: Icon(icon, color: NothingTheme.accent, size: 24),
+          child: Icon(icon, color: Theme.of(context).colorScheme.primary, size: 24),
         ),
         const SizedBox(width: 16),
         Text(title, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
