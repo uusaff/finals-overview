@@ -154,7 +154,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: appState.isPro ? Colors.white : colorScheme.primary),
                     const SizedBox(width: 8),
                     Text(
-                      appState.isPro ? 'Finals Tracker PRO' : 'Unlock Pro (\\$5 Lifetime)',
+                      appState.isPro ? 'Finals Tracker PRO' : 'Unlock Pro (\$5 Lifetime)',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: appState.isPro ? Colors.white : colorScheme.onSurface,
                         fontWeight: FontWeight.bold,
