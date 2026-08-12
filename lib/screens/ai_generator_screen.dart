@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
 import '../theme.dart';
+import '../services/ai_service.dart';
+import '../models/app_state.dart';
 
 class AiGeneratorScreen extends StatefulWidget {
   const AiGeneratorScreen({super.key});
@@ -10,26 +13,59 @@ class AiGeneratorScreen extends StatefulWidget {
 }
 
 class _AiGeneratorScreenState extends State<AiGeneratorScreen> {
-  final _controller = TextEditingController();
+  final _syllabusController = TextEditingController();
+  final _subjectNameController = TextEditingController();
   bool _isGenerating = false;
   bool _isDone = false;
+  List<String> _generatedTopics = [];
 
   void _generate() async {
-    if (_controller.text.isEmpty) return;
+    if (_syllabusController.text.isEmpty || _subjectNameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please provide both a Subject Name and Syllabus.')),
+      );
+      return;
+    }
     
     setState(() {
       _isGenerating = true;
     });
     
-    // Mock network delay
-    await Future.delayed(const Duration(seconds: 3));
-    
-    if (mounted) {
-      setState(() {
-        _isGenerating = false;
-        _isDone = true;
-      });
+    try {
+      final aiService = AiService();
+      final topics = await aiService.generateStudyPlan(_syllabusController.text);
+      
+      if (mounted) {
+        setState(() {
+          _generatedTopics = topics;
+          _isGenerating = false;
+          _isDone = true;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isGenerating = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error generating plan: $e')),
+        );
+      }
     }
+  }
+
+  void _saveToDashboard() {
+    if (_generatedTopics.isEmpty || _subjectNameController.text.isEmpty) return;
+    
+    context.read<AppState>().addGeneratedSubject(
+      _subjectNameController.text, 
+      _generatedTopics,
+    );
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Study Plan saved to your Dashboard!')),
+    );
+    Navigator.pop(context);
   }
 
   @override
@@ -64,7 +100,17 @@ class _AiGeneratorScreenState extends State<AiGeneratorScreen> {
         const SizedBox(height: 32),
         
         TextField(
-          controller: _controller,
+          controller: _subjectNameController,
+          decoration: const InputDecoration(
+            labelText: 'Subject Name',
+            hintText: 'e.g. Biology 101',
+          ),
+        ).animate().slideY(begin: 0.1, delay: 300.ms).fadeIn(),
+        
+        const SizedBox(height: 16),
+
+        TextField(
+          controller: _syllabusController,
           maxLines: 8,
           decoration: const InputDecoration(
             hintText: 'e.g. Chapter 1: Introduction to Cell Biology...',
@@ -107,15 +153,17 @@ class _AiGeneratorScreenState extends State<AiGeneratorScreen> {
         
         const SizedBox(height: 32),
         
-        // Mock output
-        _buildPlanItem('Day 1: Cell Structure Basics', colorScheme),
-        _buildPlanItem('Day 2: Mitochondria & Energy', colorScheme),
-        _buildPlanItem('Day 3: Practice Quiz', colorScheme),
+        // Output real generated topics
+        ..._generatedTopics.asMap().entries.map((entry) {
+          int idx = entry.key;
+          String title = entry.value;
+          return _buildPlanItem('Day ${idx + 1}: $title', colorScheme);
+        }),
         
         const SizedBox(height: 32),
         
         ElevatedButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: _saveToDashboard,
           style: ElevatedButton.styleFrom(
             backgroundColor: colorScheme.surfaceContainerHighest,
             padding: const EdgeInsets.symmetric(vertical: 16),

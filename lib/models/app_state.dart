@@ -1,4 +1,36 @@
+import 'package:flutter/flutter.dart'; // fallback
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/database_service.dart';
+
+class Topic {
+  String id;
+  String name;
+  bool isCompleted;
+
+  Topic({
+    required this.id,
+    required this.name,
+    this.isCompleted = false,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'isCompleted': isCompleted,
+    };
+  }
+
+  factory Topic.fromMap(Map<String, dynamic> map) {
+    return Topic(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      isCompleted: map['isCompleted'] ?? false,
+    );
+  }
+}
 
 class Subject {
   String id;
@@ -18,31 +50,41 @@ class Subject {
   int get completedTopics => topics.where((t) => t.isCompleted).length;
   int get totalTopics => topics.length;
   double get progress => totalTopics == 0 ? 0 : completedTopics / totalTopics;
-}
 
-class Topic {
-  String id;
-  String name;
-  bool isCompleted;
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'courseCode': courseCode,
+      'instructor': instructor,
+      'topics': topics.map((t) => t.toMap()).toList(),
+    };
+  }
 
-  Topic({
-    required this.id,
-    required this.name,
-    this.isCompleted = false,
-  });
+  factory Subject.fromMap(String id, Map<String, dynamic> map) {
+    return Subject(
+      id: id,
+      name: map['name'] ?? '',
+      courseCode: map['courseCode'] ?? '',
+      instructor: map['instructor'] ?? '',
+      topics: (map['topics'] as List<dynamic>?)
+              ?.map((t) => Topic.fromMap(Map<String, dynamic>.from(t)))
+              .toList() ??
+          [],
+    );
+  }
 }
 
 class Exam {
   String id;
   String subjectId;
-  String type; // e.g. Midterm, Final
+  String type;
   DateTime date;
   TimeOfDay startTime;
   TimeOfDay endTime;
   String room;
   String teacher;
   String notes;
-  String priority; // High, Medium, Low
+  String priority;
   bool isCompleted;
 
   Exam({
@@ -58,6 +100,43 @@ class Exam {
     this.priority = 'Medium',
     this.isCompleted = false,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'subjectId': subjectId,
+      'type': type,
+      'date': date.toIso8601String(),
+      'startTime': '${startTime.hour}:${startTime.minute}',
+      'endTime': '${endTime.hour}:${endTime.minute}',
+      'room': room,
+      'teacher': teacher,
+      'notes': notes,
+      'priority': priority,
+      'isCompleted': isCompleted,
+    };
+  }
+
+  factory Exam.fromMap(String id, Map<String, dynamic> map) {
+    final startParts = (map['startTime'] as String? ?? '0:0').split(':');
+    final endParts = (map['endTime'] as String? ?? '0:0').split(':');
+    return Exam(
+      id: id,
+      subjectId: map['subjectId'] ?? '',
+      type: map['type'] ?? '',
+      date: DateTime.parse(map['date'] ?? DateTime.now().toIso8601String()),
+      startTime: TimeOfDay(
+          hour: int.tryParse(startParts[0]) ?? 0,
+          minute: int.tryParse(startParts.length > 1 ? startParts[1] : '0') ?? 0),
+      endTime: TimeOfDay(
+          hour: int.tryParse(endParts[0]) ?? 0,
+          minute: int.tryParse(endParts.length > 1 ? endParts[1] : '0') ?? 0),
+      room: map['room'] ?? '',
+      teacher: map['teacher'] ?? '',
+      notes: map['notes'] ?? '',
+      priority: map['priority'] ?? 'Medium',
+      isCompleted: map['isCompleted'] ?? false,
+    );
+  }
 }
 
 class AppState extends ChangeNotifier {
@@ -68,6 +147,54 @@ class AppState extends ChangeNotifier {
   Color? customBackgroundColor;
   String? customBackgroundImage;
   
+  final DatabaseService _db = DatabaseService();
+  StreamSubscription? _subjectsSub;
+  StreamSubscription? _examsSub;
+  String? _uid;
+
+  List<Subject> subjects = [];
+  List<Exam> exams = [];
+
+  AppState() {
+    // Listen to auth changes so we know who is logged in
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user != null) {
+        _uid = user.uid;
+        _initStreams();
+      } else {
+        _uid = null;
+        _subjectsSub?.cancel();
+        _examsSub?.cancel();
+        subjects = [];
+        exams = [];
+        notifyListeners();
+      }
+    });
+  }
+
+  void _initStreams() {
+    if (_uid == null) return;
+    _subjectsSub?.cancel();
+    _examsSub?.cancel();
+    
+    _subjectsSub = _db.streamSubjects(_uid!).listen((newSubjects) {
+      subjects = newSubjects;
+      notifyListeners();
+    });
+    
+    _examsSub = _db.streamExams(_uid!).listen((newExams) {
+      exams = newExams;
+      notifyListeners();
+    });
+  }
+
+  @override
+  void dispose() {
+    _subjectsSub?.cancel();
+    _examsSub?.cancel();
+    super.dispose();
+  }
+
   void setProStatus(bool status) {
     isPro = status;
     notifyListeners();
@@ -80,116 +207,93 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Subject> subjects = [
-    Subject(
-      id: "1",
-      name: "Data Structures",
-      courseCode: "CS-201",
-      instructor: "Dr. Smith",
-      topics: [
-        Topic(id: "1", name: "Arrays & Linked Lists", isCompleted: true),
-        Topic(id: "2", name: "Trees & Graphs"),
-      ],
-    ),
-    Subject(
-      id: "2",
-      name: "Assembly Language",
-      courseCode: "CS-202",
-      instructor: "Prof. Johnson",
-      topics: [
-        Topic(id: "3", name: "Registers & Memory"),
-      ],
-    ),
-  ];
-
-  List<Exam> exams = [];
-
-  AppState() {
-    // Generate dummy exams
-    exams = [
-      Exam(
-        id: "1",
-        subjectId: "1",
-        type: "Final Exam",
-        date: DateTime.now().add(const Duration(days: 2)),
-        startTime: const TimeOfDay(hour: 8, minute: 30),
-        endTime: const TimeOfDay(hour: 10, minute: 30),
-        room: "Room 204",
-        teacher: "Dr. Smith",
-        priority: "High",
-      ),
-      Exam(
-        id: "2",
-        subjectId: "2",
-        type: "Midterm",
-        date: DateTime.now().add(const Duration(days: 5)),
-        startTime: const TimeOfDay(hour: 14, minute: 0),
-        endTime: const TimeOfDay(hour: 16, minute: 0),
-        room: "Hall A",
-        teacher: "Prof. Johnson",
-        priority: "Medium",
-      ),
-    ];
-  }
-
   void updateDashboardTitle(String newTitle) {
     dashboardTitle = newTitle;
     notifyListeners();
   }
 
   void addSubject(String name, String courseCode, String instructor) {
-    subjects.add(Subject(
-      id: DateTime.now().toString(),
+    if (_uid == null) return;
+    final subject = Subject(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: name,
       courseCode: courseCode,
       instructor: instructor,
       topics: [],
-    ));
-    notifyListeners();
+    );
+    _db.addSubject(_uid!, subject);
+  }
+
+  void addGeneratedSubject(String name, List<String> topicNames) {
+    if (_uid == null) return;
+    final subject = Subject(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: name,
+      courseCode: '',
+      instructor: '',
+      topics: topicNames.map((t) => Topic(
+        id: DateTime.now().millisecondsSinceEpoch.toString() + t.hashCode.toString(), 
+        name: t
+      )).toList(),
+    );
+    _db.addSubject(_uid!, subject);
   }
 
   void deleteSubject(String id) {
-    subjects.removeWhere((s) => s.id == id);
+    if (_uid == null) return;
+    _db.deleteSubject(_uid!, id);
     // Cascade delete exams
-    exams.removeWhere((e) => e.subjectId == id);
-    notifyListeners();
-  }
-
-  void addExam(Exam exam) {
-    exams.add(exam);
-    notifyListeners();
-  }
-
-  void updateExam(Exam updatedExam) {
-    final index = exams.indexWhere((e) => e.id == updatedExam.id);
-    if (index != -1) {
-      exams[index] = updatedExam;
-      notifyListeners();
+    for (var exam in exams.where((e) => e.subjectId == id)) {
+      _db.deleteExam(_uid!, exam.id);
     }
   }
 
+  void addExam(Exam exam) {
+    if (_uid == null) return;
+    _db.addExam(_uid!, exam);
+  }
+
+  void updateExam(Exam updatedExam) {
+    if (_uid == null) return;
+    _db.updateExam(_uid!, updatedExam);
+  }
+
   void deleteExam(String id) {
-    exams.removeWhere((e) => e.id == id);
-    notifyListeners();
+    if (_uid == null) return;
+    _db.deleteExam(_uid!, id);
   }
 
   void toggleExamCompletion(String id) {
-    final exam = exams.firstWhere((e) => e.id == id);
-    exam.isCompleted = !exam.isCompleted;
-    notifyListeners();
+    if (_uid == null) return;
+    final index = exams.indexWhere((e) => e.id == id);
+    if (index != -1) {
+      final exam = exams[index];
+      exam.isCompleted = !exam.isCompleted;
+      _db.updateExam(_uid!, exam);
+    }
   }
 
   void toggleTopic(String subjectId, String topicId) {
-    final subject = subjects.firstWhere((s) => s.id == subjectId);
-    final topic = subject.topics.firstWhere((t) => t.id == topicId);
-    topic.isCompleted = !topic.isCompleted;
-    notifyListeners();
+    if (_uid == null) return;
+    final sIndex = subjects.indexWhere((s) => s.id == subjectId);
+    if (sIndex != -1) {
+      final subject = subjects[sIndex];
+      final tIndex = subject.topics.indexWhere((t) => t.id == topicId);
+      if (tIndex != -1) {
+        subject.topics[tIndex].isCompleted = !subject.topics[tIndex].isCompleted;
+        _db.updateSubject(_uid!, subject);
+      }
+    }
   }
 
   void addTopic(String subjectId, String topicName) {
-    final subject = subjects.firstWhere((s) => s.id == subjectId);
-    subject.topics.add(Topic(id: DateTime.now().toString(), name: topicName));
-    notifyListeners();
+    if (_uid == null) return;
+    final sIndex = subjects.indexWhere((s) => s.id == subjectId);
+    if (sIndex != -1) {
+      final subject = subjects[sIndex];
+      subject.topics.add(Topic(id: DateTime.now().millisecondsSinceEpoch.toString(), name: topicName));
+      _db.updateSubject(_uid!, subject);
+    }
   }
 
   void toggleTheme() {

@@ -7,9 +7,16 @@ import 'services/auth_service.dart';
 import 'services/coupon_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    debugPrint("Failed to load .env file: $e");
+  }
   await CouponService().initializeDefaultCoupon();
   
   runApp(

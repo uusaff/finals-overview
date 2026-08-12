@@ -4,9 +4,74 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../models/app_state.dart';
 import '../theme.dart';
+import '../services/ai_service.dart';
 
-class StatsScreen extends StatelessWidget {
+class StatsScreen extends StatefulWidget {
   const StatsScreen({super.key});
+
+  @override
+  State<StatsScreen> createState() => _StatsScreenState();
+}
+
+class _StatsScreenState extends State<StatsScreen> {
+  bool _isGenerating = false;
+
+  void _generateInsights(AppState state) async {
+    setState(() => _isGenerating = true);
+    try {
+      final aiService = AiService();
+      
+      int totalTopics = 0;
+      int completedTopics = 0;
+      for (var s in state.subjects) {
+        totalTopics += s.totalTopics;
+        completedTopics += s.completedTopics;
+      }
+
+      final upcomingExams = state.exams
+          .where((e) => !e.isCompleted && e.date.isAfter(DateTime.now()))
+          .map((e) => "${e.type} (in ${e.date.difference(DateTime.now()).inDays} days)")
+          .toList();
+
+      final insight = await aiService.generateInsights(
+        completedTopics: completedTopics,
+        totalTopics: totalTopics,
+        upcomingExams: upcomingExams,
+      );
+
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(Icons.auto_awesome, color: Theme.of(context).colorScheme.primary),
+                const SizedBox(width: 8),
+                const Text('AI Insights'),
+              ],
+            ),
+            content: Text(insight, style: const TextStyle(height: 1.5)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('GOT IT'),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to generate insights: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isGenerating = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +116,24 @@ class StatsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Text('Overall Preparation', style: Theme.of(context).textTheme.titleMedium),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: _isGenerating ? null : () => _generateInsights(state),
+                          icon: _isGenerating 
+                              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
+                              : const Icon(Icons.auto_awesome, color: Colors.black),
+                          label: Text(
+                            _isGenerating ? 'ANALYZING...' : 'AI INSIGHTS',
+                            style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: colorScheme.primary,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
