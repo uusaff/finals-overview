@@ -9,6 +9,8 @@ import '../theme.dart';
 import 'subject_screen.dart';
 import 'pomodoro_screen.dart';
 import 'settings_screen.dart';
+import 'focus_mode_screen.dart';
+import 'ai_generator_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -163,6 +165,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ).animate().slideY(begin: 0.5, end: 0, duration: 200.ms, delay: 50.ms).fade(),
           const SizedBox(height: 12),
           _buildFabMenuItem(
+            Icons.dark_mode_rounded, 
+            'Focus Mode (AOD)', 
+            () {
+              setState(() => _isFabOpen = false);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const FocusModeScreen()));
+            }, 
+            colorScheme
+          ).animate().slideY(begin: 0.5, end: 0, duration: 200.ms, delay: 100.ms).fade(),
+          const SizedBox(height: 12),
+          _buildFabMenuItem(
+            Icons.auto_awesome_rounded, 
+            'AI Generator', 
+            () {
+              setState(() => _isFabOpen = false);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const AiGeneratorScreen()));
+            }, 
+            colorScheme
+          ).animate().slideY(begin: 0.5, end: 0, duration: 200.ms, delay: 150.ms).fade(),
+          const SizedBox(height: 12),
+          _buildFabMenuItem(
             Icons.add_rounded, 
             'Add Subject', 
             () {
@@ -171,7 +193,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             }, 
             colorScheme,
             isAccent: true
-          ).animate().slideY(begin: 0.5, end: 0, duration: 200.ms, delay: 100.ms).fade(),
+          ).animate().slideY(begin: 0.5, end: 0, duration: 200.ms, delay: 200.ms).fade(),
           const SizedBox(height: 16),
         ],
         FloatingActionButton(

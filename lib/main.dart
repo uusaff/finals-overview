@@ -3,10 +3,11 @@ import 'package:provider/provider.dart';
 import 'theme.dart';
 import 'screens/login_screen.dart';
 import 'models/app_state.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Firebase.initializeApp() will go here later
+  await Firebase.initializeApp();
   
   runApp(
     ChangeNotifierProvider(
