@@ -37,7 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     const Color(0xFFFFFFFF), // White
   ];
 
-  final List<Color> _bgColors = [
+  final List<Color> _darkBgColors = [
     // Free Colors (First 4)
     const Color(0xFF0A0A0A), // Black
     const Color(0xFF121212), // Dark Gray
@@ -61,6 +61,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
     const Color(0xFF1D4044), // Teal 900
     const Color(0xFF285E61), // Teal 700
   ];
+
+  final List<Color> _lightBgColors = [
+    // Free Colors (First 4)
+    const Color(0xFFF5F5F5), // Light Gray
+    const Color(0xFFFFFFFF), // White
+    const Color(0xFFF8FAFC), // Slate 50
+    const Color(0xFFF1F5F9), // Slate 100
+    // Pro Colors (Next 16)
+    const Color(0xFFEDF2F7), // Gray 100
+    const Color(0xFFE2E8F0), // Gray 200
+    const Color(0xFFEBF8FF), // Blue 50
+    const Color(0xFFBEE3F8), // Blue 100
+    const Color(0xFFF0FFF4), // Green 50
+    const Color(0xFFC6F6D5), // Green 100
+    const Color(0xFFFFF5F5), // Red 50
+    const Color(0xFFFED7D7), // Red 100
+    const Color(0xFFFAF5FF), // Purple 50
+    const Color(0xFFE9D8FD), // Purple 100
+    const Color(0xFFFFFFF0), // Yellow 50
+    const Color(0xFFFEFCBF), // Yellow 100
+    const Color(0xFFE6FFFA), // Teal 50
+    const Color(0xFFB2F5EA), // Teal 100
+    const Color(0xFFF0FDF4), // Emerald 50
+    const Color(0xFFFFFBEB), // Amber 50
+  ];
+
+  bool _notificationsEnabled = true;
 
   Future<void> _verifyCoupon() async {
     final code = _couponController.text.trim();
@@ -229,9 +256,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             height: 60,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: _bgColors.length,
+              itemCount: isDark ? _darkBgColors.length : _lightBgColors.length,
               itemBuilder: (context, index) {
-                final color = _bgColors[index];
+                final color = isDark ? _darkBgColors[index] : _lightBgColors[index];
                 final isProColor = index >= 4;
                 final isSelected = (appState.customBackgroundColor?.value ?? (isDark ? const Color(0xFF0A0A0A) : const Color(0xFFF5F5F5)).value) == color.value;
                 
@@ -257,6 +284,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
               value: isDark,
               onChanged: (val) {
                 context.read<AppState>().toggleTheme();
+              },
+              activeColor: colorScheme.primary,
+            ),
+          ),
+          
+          const SizedBox(height: 32),
+          Text('Preferences', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(Icons.notifications_active_rounded, color: colorScheme.primary),
+            title: const Text('Push Notifications'),
+            trailing: Switch(
+              value: _notificationsEnabled,
+              onChanged: (val) {
+                setState(() => _notificationsEnabled = val);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(val ? 'Notifications enabled' : 'Notifications disabled'), backgroundColor: colorScheme.primary),
+                );
               },
               activeColor: colorScheme.primary,
             ),

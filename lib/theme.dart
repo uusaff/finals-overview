@@ -38,8 +38,8 @@ class NothingTheme {
       scaffoldBackgroundColor: background,
       primaryColor: accent,
       colorScheme: isDark 
-          ? ColorScheme.dark(primary: accent, surface: surface, onPrimary: Colors.white, onSurface: textPrimary)
-          : ColorScheme.light(primary: accent, surface: surface, onPrimary: Colors.white, onSurface: textPrimary),
+          ? ColorScheme.dark(primary: accent, surface: surface, onPrimary: accent.computeLuminance() > 0.5 ? Colors.black : Colors.white, onSurface: textPrimary)
+          : ColorScheme.light(primary: accent, surface: surface, onPrimary: accent.computeLuminance() > 0.5 ? Colors.black : Colors.white, onSurface: textPrimary),
       textTheme: GoogleFonts.interTextTheme(baseTextTheme).copyWith(
         bodyLarge: GoogleFonts.inter(color: textPrimary, fontWeight: FontWeight.w400),
         bodyMedium: GoogleFonts.inter(color: textPrimary, fontWeight: FontWeight.w400),
@@ -76,7 +76,7 @@ class NothingTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: accent,
-          foregroundColor: Colors.white,
+          foregroundColor: accent.computeLuminance() > 0.5 ? Colors.black : Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
           ),

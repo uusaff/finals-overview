@@ -84,9 +84,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
   
-  void _submitApple() async {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Apple Sign-In requires a physical iOS device and Developer Account.')));
-  }
 
   void _navigateToMain() {
     Navigator.of(context).pushReplacement(
@@ -256,10 +253,9 @@ class _LoginScreenState extends State<LoginScreen> {
               
               // Social Logins
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildSocialButton(Icons.g_mobiledata_rounded, 'Google', _submitGoogle, colorScheme),
-                  _buildSocialButton(Icons.apple_rounded, 'Apple', _submitApple, colorScheme),
                 ],
               ).animate().fade(delay: 700.ms).slideY(begin: 0.2, end: 0),
             ],

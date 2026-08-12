@@ -194,6 +194,7 @@ class AppState extends ChangeNotifier {
 
   void toggleTheme() {
     themeMode = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    customBackgroundColor = null; // Clear custom background so it defaults to the correct light/dark color
     notifyListeners();
   }
 }
